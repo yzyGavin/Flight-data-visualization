@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			/*
+			 *onmessage和postMessage()必须挂在worker对象上，
+			 * 而在worker中使用时不用这样做。
+			 * 原因是，在worker内部，worker是有效的全局作用域。
+			 * 主线程终止Worker :obj.terminate();
+			 * worker自己终止 close();
+			 * onerror 错误处理
+			 * */
+			if(window.Worker){
+				let hold = new Worker("worker1.js")
+				hold.postMessage("你好啊 worker");
+				hold.onmessage=function(e){
+					console.log(`我是主线程收到的消息:${e.data}`);
+				}
+			}else{
+				
+			}
+			
+		</script>
+	</body>
+</html>

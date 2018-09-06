@@ -1,0 +1,23 @@
+CACHE MANIFEST
+#vv5.4
+CACHE:
+./js/main.min.js
+./style/ui2.css
+./js/allCity.haohao
+./js/allCityFlightNum.js
+./js/countUp.min.js
+./js/echarts3.84.js
+./js/webworker/everyDayflight.js
+./js/webworker/scatter.js
+./js/webworker/search.js
+./js/request.js
+./js/localForage.js
+./js/echarts-wordcloud.min.js
+./js/shuiqiu.min.js
+./map/js/world.js
+./layui/layui.js
+./js/airport.haohao
+./js/socket.io.js
+NETWORK:
+*
+

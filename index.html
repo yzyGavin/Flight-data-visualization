@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html manifest="index.appcache">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="cache-control" content="max-age=3600">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,minimal-ui">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<!--web app全屏-->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!--隐藏状态栏-->
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<!--uc全屏  qq全屏-->
+		<meta name="full-screen" content="yes">
+		<meta name="browsermode" content="application">
+		<meta name="x5-orientation" content="portrait">
+		<meta name="x5-fullscreen" content="true">
+		<meta name="x5-page-mode" content="app">
+		<title>星云航空数据可视化平台</title>
+		<link href="img/favicon.png" rel="shortcut icon" />
+
+		<script>
+			function checkBrowser() {
+				if(!!window.ActiveXObject || "ActiveXObject" in window) {
+					window.location.href = 'Browser.html';
+				} else {
+					if(window.Worker && window.indexedDB) {
+						//正确
+					} else {
+						window.location.href = 'Browser.html'
+					}
+				}
+			};
+			checkBrowser();
+			console.time("全局");
+			let myData = {};
+
+			function funAllCityNum(allCityNum) {
+				myData.allCityNum = allCityNum;
+			}
+
+			function funAllCity(city) {
+				if(city) {
+					myData.allCity = city
+				} else {
+					console.error(arguments[1] + "错误");
+				}
+			};
+
+			function funAirport(allAirport) {
+				myData.allAirport = allAirport;
+			};
+			(function() {
+				//console.log("浏览器的字体大小:" + getComputedStyle(document.documentElement, false)['fontSize']);
+				let userFontSize = parseFloat(getComputedStyle(document.documentElement, false)['fontSize']);
+				let ratio = 16 / userFontSize;
+				let fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+				document.documentElement.style.fontSize = fontSize + "rem";
+				window.onresize = function() {
+					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+					document.documentElement.style.fontSize = fontSize + "rem";
+				}
+			})();
+
+			(function() {
+				let script = document.createElement("script");
+				script.setAttribute("src", "js/allCity.haohao");
+				document.querySelector("head").appendChild(script);
+				let script2 = document.createElement("script");
+				script2.setAttribute("src", "js/allCityFlightNum.js");
+				document.querySelector("head").appendChild(script2);
+				let script3 = document.createElement("script");
+				script3.setAttribute("src", "js/airport.haohao");
+				document.querySelector("head").appendChild(script3);
+			})();
+		</script>
+		<link href="style/css/font-awesome.css" rel="stylesheet">
+		<link rel="stylesheet" href="style/ui2.css" />
+		<style>
+
+		</style>
+	</head>
+
+	<body>
+		<div id="box">
+			<header>
+				<div id="logo">
+					『星云•航空数据可视化平台』
+				</div>
+				<div id="info">
+					<code id="typingInfo" class="typing1">
+						<i>2018年</i><i id="infoTime">3月24日  ~  2018年3月30日</i>，<span id="typingInfoCity">成都市</span><code id="infoType"></code><span id="infoNumFlights">924</span>架次。
+					<code id="infoHome_country">通往全球</code><span id="infoNumCitys">0</span>个城市 <span id="infoCountry">0</span><code id="info_moText">个国家和地区。</code>
+					</code>
+				</div>
+				<i class="fa fa-list-ul" title="侧边栏" tool="sideBar"></i>
+				<i class="fa fa-search" title="搜索 CTRL+F" tool="search"></i>
+				<i class="fa fa-arrows-alt" title="全屏 (点击任意一处/键盘按下任意键)" tool="FullScreen"></i>
+				<i class="fa fa-arrow-left" title="回退到主页" tool="back"></i>
+				<i class="fa fa-tags" title="切换 单次航线/聚合统计图表 ↑ ↓" tool="switch"></i>
+				<i class="fa fa-language" title="打开百度翻译" tool="language"></i>
+				<i class="fa fa-question-circle-o" title="使用帮助" tool="help"></i>
+				<i class="fa fa-commenting" title="在线交流" tool="chat"></i>
+				<div id="optionTool">
+					<i class="fa fa-flag-checkered" title="双选/国家" checked='false' tool="optionCounty"></i>
+					<i class="fa fa-building" title="双选/城市" checked='false' tool="optionCity"></i>
+					<i class="fa fa-eye" title="查看全景" checked='true' style="color:rgba(0,245,255,1);border: 0.02rem solid rgba(0,245,255,1);" tool="optionEye"></i>
+				</div>
+
+			</header>
+			<!--右键菜单-->
+			<div id="menu">
+				<div menu="fullChart"><i class="fa fa-expand"></i><span>全屏此图表</span></div>
+				<div menu="refresh"><i class="fa fa-refresh"></i><span>刷新</span></div>
+				<div menu="saveImage"><i class="fa fa-cloud-download"></i><span>导出图片</span></div>
+				<div menu="back"><i class="fa fa-reply"></i><span>后退</span></div>
+				<div menu="go"><i class="fa fa-share"></i><span>前进</span></div>
+				<div menu="infoMe"><i class="fa fa-info-circle"></i><span>关于我们</span></div>
+				<div menu="view-source"><i class="fa fa-code"></i><span>查看源码</span></div>
+			</div>
+			<div id="sideBar">
+				<div id="side_title"><i class="fa fa-sticky-note"></i><span>星云便笺</span><code id="side_title_sub"></code></div>
+				<textarea id="side_text" name="" rows="" cols="" maxlength="600" placeholder="在星云,记下您的见闻(自动保存)"></textarea>
+				<div id="cog"><i class="fa fa-cog"></i><span>设置</span></div>
+				<div class="divlist">
+					<code>航线动画</code><span>关闭可大幅提升性能</span>
+					<div class="wrap">
+						<input id="checkbox_lines" checked="checked" type="checkbox" class="checkbox_lines">
+						<label class="onoff" for="checkbox_lines">
+         				<span></span>
+      				</label>
+					</div>
+				</div>
+				<div class="divlist" id="dinwei">
+					<code>耗油动画</code><span>关闭可大幅提升性能</span>
+					<div class="wrap">
+						<input id="checkbox" checked="" type="checkbox" class="checkbox_lines">
+						<label class="onoff" for="checkbox">
+         				<span></span>
+      				</label>
+					</div>
+				</div>
+				<div class="divlist" id="dinwei2">
+					<code>航线高亮颜色</code><span></span>
+					<div class="wrap">
+						<input id="lines_color" type="color" autocomplete="true" value="#00F5FF">
+					</div>
+				</div>
+				<div class="divlist" id="dinwei3">
+					<code>图片导出格式</code>
+					<div id="imageType">
+						<input class="imageType" id="png" type="radio" name="imageType" checked>
+						<label class='radio' for="png">png</label>
+						<input class="imageType" id="jpeg" type="radio" name="imageType">
+						<label class='radio' for="jpeg">jpeg</label>
+					</div>
+				</div>
+
+				<div class="divlist" id="dinwei4">
+					<code>航班概览自动切换间隔</code><span id="timedelyNum">1500</span><span>毫秒</span>
+					<input id="timedely" type="range" min="500" max='10000' step='500' value="2000" />
+				</div>
+				<div class="divlist" id="dinwei5">
+					<code>来往国家Top数</code><span id="countryTopNum">10</span><span>个</span>
+					<input id="countryTop" type="range" min="3" max='200' step='1' value="10" />
+				</div>
+			</div>
+
+			<div id="chart" class="indexPageAnimation">
+
+				<div id="indexView">
+					<div chart="1"></div>
+					<div chart="2"></div>
+					<div chart="3"></div>
+					<div chart="4"></div>
+					<div chart="5"></div>
+					<div id="chartSum3">
+					</div>
+					<div chart="7"></div>
+					<div chart="8">
+						<div id="chart8Xian"></div>
+						<i id="chart8FlightNum">0</i>
+						<i id="chart8FlightNumTitle">月均航班数 / 架次</i>
+						<i id="chart8RankingTitle">全球航空繁荣排名</i>
+						<i id="chart8Ranking">0</i><i id="chart8Ranksplit">/</i><i id="chart8RankSum">3982</i>
+					</div>
+					<i class="fa fa-arrow-circle-o-left" title="弹出日历"></i>
+					<div chart="9"></div>
+				</div>
+
+				<div id="secondPage" class="secondPageAnimationClose">
+					<div id="secondPageMap"></div>
+					<div id="secondPageMapLeida"></div>
+					<div id="secondPageMapXy"></div>
+					<div id="secondCity">
+						<div id="secondCityName"><span>北京</span> <i class="fa fa-long-arrow-right"></i> <span>香港特别行政区</span></div>
+						<div id="secondFlyName"><span>北京首都国际机场</span> <span>香港国际机场</span> </div>
+					</div>
+				</div>
+				<div id="optionMap">
+
+				</div>
+
+			</div>
+			<pre id="view-source" class="layui-code"></pre>
+			<div id="about" class="">
+				<i class="fa fa-info-circle"></i>
+				<div id="java">李佳俊:java web技术/数据库技术</div>
+				<div id="dataSource">余丰树:java数据采集技术/数据顾问</div>
+				<div id="javascript">蒋&nbsp;浩:前端技术/产品设计</div>
+				<div id="team">川信•启航工作室&nbsp;星云航班数据可视化团队</div>
+			</div>
+		</div>
+		<div id="loading">
+			<div id="loading1"></div>
+			<div id="loading2"></div>
+		</div>
+		<div id="loading_text">
+			<div id="loading_text_title">检查更新中...</div>
+			<div id="loading_text_content"></div>
+		</div>
+		<div id="popup_mask">
+			<div id="popup_border">
+				<div id="popup">
+					<div id="popup_title">我是title</div>
+					<div id="popup_body" class="">星云:<span></span>;</div>
+					<button id="popup_false">取消</button>
+					<button id="popup_true">好的</button>
+				</div>
+			</div>
+		</div>
+		<div id="search" class>
+			<div id="search_title">星云•search</div><i class="fa fa-close"></i>
+			<div id="headType">
+				<div id="headType_all" class="headType_class">全部</div>
+				<div id="headType_home">国内</div>
+				<div id="headType_country">国际</div>
+			</div>
+			<div id="search_search" class="search_center">
+				<i class="fa fa-search"></i><input id="searchInput" class="searchInput" type="text" placeholder="城市/国家/航班号查询" />
+				<i class="fa fa-calendar"></i><input id="searchDate" class="searchInput" type="text" value="2018-2-3 - 2018-2-6" />
+				<input id="searchSingleDate" class="searchInput" type="text" value="2018-2-1" />
+				<div id="search_result_box">
+					<i>想查询点什么,请告诉星云哦!</i>
+				</div>
+				<div id="search_select">
+					<div selectName="city"><i class="fa fa-building-o"></i>城市名</div>
+					<div selectName="country"><i class="fa fa-flag-checkered"></i>国家名</div>
+					<div selectName="flyNum"><i class="fa fa-plane"></i>航班号</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="chat" class=''>
+			<div id="chat_title">星云•在线交流<span class="chat_title_onlineNum">(当前<span id="chat_title_onlineNum">0</span>人在线)</span>
+			</div><i class="fa fa-close"><span></span></i>
+			<div id="chat_body" class="chat_center">
+				<div id="chat_main">
+					<div id="chat_main_info">
+						<!--别人的-->
+						<div class="other_info">
+							<span class="other_info_name">小云云</span>
+							<code class="fa fa-paper-plane-o other_info_photo"></code>
+							<span class="other_info_chat">欢迎来到星云在线交流平台!祝您学习交流愉快！</span>
+						</div>
+					</div>
+				</div>
+				<div id="chat_input" contenteditable="false">
+
+				</div>
+				<i class="" id="onlineNum" title="在线人数"></i>
+				<i class="fa fa-smile-o" id="biaoqing" title="选择表情">
+						<div id="biaoqing_box"></div>
+					</i>
+
+				<div id="btnSend">发送</div>
+			</div>
+			<div id="setName">
+				<input type="text" id="" value="" placeholder="输入您的昵称" maxlength="6" />
+				<div id="selfName"></div>
+				<div id="smile" class="fa fa-paper-plane-o"></div>
+				<!--头像列表-->
+				<div id="smileList">
+					<div>选择您的头像</div>
+					<i class="fa fa-paper-plane-o"></i>
+					<i class="fa fa-user-o"></i>
+					<i class="fa fa-github"></i>
+					<i class="fa fa-android"></i>
+					<i class="fa fa-pagelines"></i>
+					<i class="fa fa-diamond"></i>
+					<i class="fa fa-frown-o"></i>
+					<i class="fa fa-smile-o"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-pied-piper-alt"></i>
+					<i class="fa fa-heart"></i>
+				</div>
+				<div id="btnSetName">进入房间</div>
+			</div>
+		</div>
+		<div id="welcome">
+			<div id="welcome_border">
+				<div id="welcome_header">
+					<div>产品介绍</div><div>基本操作</div><div>搜索与图表</div>
+				</div>
+				<div id="jieshao" class="welcome_text">
+					<span id="firstInfo">欢迎来到星云航空数据可视化平台,第一次访问将会默认打开此页面,点击上方按钮切换说明,点击右下侧'立刻体验'关闭此页面</span>
+					<span>1.<code>『多』</code>全球民航数据，海量信息任您所享</span>
+					<span>2.<code>『快』</code>‘开箱即用的应用’，即使数据海量，也能hold住计算，快速出图</span>
+					<span>3.<code>『好』</code>全新web技术，丰富的人机交互，云应用为体验与快速助力</span>
+					<span>4.<code>『精准』</code>多方位数据采集，数据全面又精准</span>
+					<span>5.<code>『清爽』</code>屏幕越大越清爽，完美支持所有分辨率（16:9（宽高））屏幕，单张图表也能全屏，可视化更爽快</span>
+					<span>6.<code>『细致』</code>细致入微的细节处理，立刻进入，体验星云平台的魅力！</span>
+					
+					<span></span>
+				</div>
+				<div id="caozuo" class="welcome_text">
+					<div>1.快捷操作:</div>
+					<span>1.1  键盘左方向键(←)快速切换到‘通航城市全景’页,可在通过页面右上角工具栏选择查询模式,然后再大地图上直接操作</span>
+					<span>1.2  键盘右方向键(→)可从‘通航城市全景’页 切换回主页</span>
+					<span>1.3  键盘上方向键(↑)切换到‘单次航班详细信息’页(或点击页面右上角第四个图标)</span>
+					<span>1.4  键盘下方向键(↓)从‘单次航班详细信息’ 页切换回主页(或点击页面右上角第四个图标)</span>
+					<span>1.5  键盘按下任意键(CTRL,ESC,win除外)或鼠标点击任意地方,自动进入全屏,按下esc或f11或右上角全屏图标可退出全屏</span>
+					<span>1.6  键盘按下 CTRL+F 快速打开搜索菜单</span>
+					<div>2.鼠标右键菜单:</div>
+					<span>2.1 鼠标在页面不同地方右键,会出现不同的功能</span>
+					<span>2.2 鼠标在某个图表上右键,点击'全屏此图表'可全屏此图表,全屏后 页面右上角 会出现'←'样式按钮,如欲退出全屏,点击该按钮即可</span>
+					<span>2.3 右键菜单 刷新:模拟浏览器属性刷新功能</span>
+					<span>2.4 右键菜单 导出图片:在图表上右键导出图片,可保持此图片到您的设备,右上角点击最右边侧边栏图标,可设置导出格式</span>
+					<span>2.5 右键菜单 后退:模拟浏览器后退功能,如果访问过'通航城市全景'页面,点击会在主页面与'通航城市全景'页之间切换</span>
+					<span>2.6 右键菜单 前进:模拟浏览器前进功能,如果访问过'通航城市全景'页面,点击会在主页面与'通航城市全景'页之间切换</span>
+					<span>2.7 右键菜单 关于我们: 出现开发者简介,点击可隐藏</span>
+					<span>2.8 右键菜单 查看源码: 模拟浏览器查看源码功能,可查看小部分的前端源码,点击可隐藏</span>
+					<div>3.页面右上角工具栏:</div>
+					<span>3.11 在线交流,点击可加入在线交流聊天室,如果是第一次进入,会进入昵称/头像设置页面</span>
+					<span>3.12 可发送表情,可在输入框输入/a 等转义符快捷的输入表情,断线会尝试自动重连</span>
+					<span>3.2 介绍与帮助页面,点击会进入当前页面,查看介绍、帮助等，如果您是第一次访问星云,会自动打开该页面</span>
+					<span>3.3 百度翻译，可方便进行地名翻译等</span>
+					<span>3.4 单次航班详细信息页，点击可与主页相互切换(键盘上下键亦可)</span>
+					<span>3.5 搜索图标 打开搜索框(ctrl+f),与全屏符号</span>
+					<span>3.6 侧边栏,可以记录便笺与功能设置</span>
+					<span>3.7 进入‘通航城市全景’页后,右上角新出现图标,可进入查看全景/双选国家查航线/双选城市查航班信息/</span>
+					<span>3.7.1 点击国旗图标后,提示选择两个国家,直接在地图上选择两个国家即可查看其所有航线</span>
+					<span>3.7.2 点击城市图标后,提示选择两个城市,直接在地图上选择两个城市可查看两个城当日所有航班,点击航班信息表中的某次航班可查看该次航班详细信息,搜索表单中切换为按航班号查询 可修改其日期.</span>
+				</div>
+				<div id="tubiao" class="welcome_text">
+					<div>1.搜索</div>
+					<span>1.1 键盘按下ctrl+f或点击页面右上角图标可打开搜索框,在搜索框头部按下鼠标可拖动</span>
+					<span>1.2 打开时 搜索框会自动获得焦点,输入城市名将会实时的智能查询出符合的城市名(全球所有有机场的城市),点击城市名即可加载该城市所有航班相关信息</span>
+					<span>1.3 搜索框右侧的日期框,可自由截取时间范围(最大范围:2月1日~5月1日),点击搜索结果的城市名时,会加载该日期范围该城市航班数据</span>
+					<span>1.4 点击最右侧的'城市名',可以切换搜索'航班号/国家'</span>
+					<span>1.5 点击上方的'全部/国内/国际',搜索将会筛选为对应的数据</span>
+					<span>1.6 搜索出城市后，出现的列表中右侧有大头针图标，点击图标可把地图视野中心切换到该城市上空且放大，并高亮该城市。</span>
+					<span>1.7 刷新或关闭页面后,会自动保存上次加载的数据</span>
+					<div>2.图表:</div>
+					<span>2.1 在第一幅图(航线繁荣度全揽)切换入港/出港时,页面正上方的文字描述会修改,地图航线会加载为相应数据</span>
+					<span>2.2 左边第二幅图(相关航司信息),在Y轴上按住鼠标左键上下滑动,可筛选航司经营规模/延误数/准点率/平均延迟分钟,再次点击可拖动,点击Y轴未选处可取消筛选</span>
+					<span>2.3 来往国家TOP榜 如果来往国家数量大于等于两个国家,本国占比默认不显示,默认TOP数位10个,侧边栏设置中可以修改,下次生效</span>
+					<span>2.4 地图可自由放大缩小，拖动，鼠标移入相关地点、航线，会显示相应信息，图例可切换所有/延误/取消航班</span>
+					<span>2.5 每日航班概览图中,点击时间上方小圆点可切换时间,点击&lt; 和  &gt;可手动切换上一天,下一天,点击最左侧按钮可暂停/播放,设置中可修改自动切换时间</span>
+				</div>
+
+			</div>
+			<div id="btnCloseWelcome">立刻体验</div>
+		</div>
+		<script>
+			//供首次判断 是否第一次访问
+			let mySave = {
+				save: function(key, value) {
+					localStorage.setItem(key, JSON.stringify(value));
+				},
+				getsave: function(key) {
+					return JSON.parse(localStorage.getItem(key)) || []; // 第一个正确后面就会被忽略 (如果没有值,返回空字符串)
+				}
+			}
+			let loading = document.querySelector("#loading");
+			let loading_text = document.querySelector("#loading_text");
+			let loading_title = document.querySelector("#loading_text_title");
+			let loading_content = document.querySelector("#loading_text_content");
+			if(window.navigator.onLine == true) { //在线时
+
+				window.applicationCache.onchecking = function(e) {
+					loading.style.display = 'block';
+					loading_title.innerText = '正在检查更新...';
+				}
+				window.applicationCache.ondownloading = function(e) {
+					console.info('正在下载资源...');
+					loading.style.display = 'block';
+					loading_title.innerText = '正在下载资源...';
+				}
+				window.applicationCache.addEventListener('progress', function(e) {
+					loading.style.display = 'block';
+					//				console.info('更新过程中,已经加载了:' + e.loaded + '/' + e.total);
+					loading_content.innerText = '程序更新进度:' + e.loaded + '/' + e.total;
+				}, false);
+				window.applicationCache.onupdateready = function(e) {
+					loading_title.innerText = '更新成功';
+					setTimeout(function() {
+						loading_text.style.display = "none";
+						location.reload();
+					}, 500)
+					loading.style.display = 'none';
+				}
+				window.applicationCache.oncached = function(e) {
+					//console.info('缓存成功');
+					loading_title.innerText = '缓存成功';
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 500)
+					loading.style.display = 'none';
+				}
+				window.applicationCache.onnoupdate = function(e) {
+					loading_title.innerText = '已是最新版本';
+					setTimeout(function() {
+						loading_text.style.opacity = "0";
+						setTimeout(function() {
+							loading_text.style.display = "none";
+						}, 1500);
+
+					}, 500);
+					loading.style.display = 'none';
+				}
+				window.applicationCache.error = function(e) {
+					loading_title.innerText = '缓存miss';
+					console.error('缓存出现错误');
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 500);
+					loading.style.display = 'none';
+				}
+			} else { //不在线时
+				loading_text.style.display = "block";
+				loading_text.style.opacity = "1";
+				loading_title.innerText = '您已离线';
+				loading_content.innerText = '可继续访问离线数据';
+				setTimeout(function() {
+					loading_text.style.opacity = "0";
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 1500);
+
+				}, 1000);
+			};
+			if(!window.applicationCache) {
+				loading_text.style.display = "block";
+				loading_text.style.opacity = "1";
+				loading_title.innerText = '您的浏览器不支持离线缓存';
+				setTimeout(function() {
+					loading_text.style.opacity = "0";
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 1500);
+
+				}, 500);
+			}
+
+			//在线离线状态检查
+			window.addEventListener('online', function() {
+				loading_text.style.opacity = "1";
+				loading_text.style.display = "block";
+				loading_title.innerText = '星云:您的网络状态已正常';
+				loading_content.innerText = '';
+				setTimeout(function() {
+					loading_text.style.opacity = "0";
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 1500);
+				}, 1000);
+			});
+			window.addEventListener('offline', function() {
+				loading_text.style.opacity = "1";
+				loading_text.style.display = "block";
+				loading_title.innerText = '您的网络不太好哦';
+				loading_content.innerText = '已掉线,可继续访问离线数据';
+				setTimeout(function() {
+					loading_text.style.opacity = "0";
+					setTimeout(function() {
+						loading_text.style.display = "none";
+					}, 1500);
+
+				}, 1000);
+			});
+
+			window.bDocument = false; //全局属性,表示页面是否被隐藏
+			document.addEventListener('click', function() {
+				Notification.requestPermission();
+			});
+			document.addEventListener("visibilitychange", function() {
+				window.bDocument = document.hidden;
+			});
+			var welcome = document.getElementById('welcome');
+			var btnCloseWelcome = document.getElementById('btnCloseWelcome');
+			btnCloseWelcome.onclick=function(){
+				welcome.style.display='none';
+			};
+				function funWelcome(){
+					mySave.save('oldCount',1)
+					welcome.style.display='block';
+					var btnHeader = document.querySelectorAll('#welcome_header div');
+					var welcome_text = document.querySelectorAll('.welcome_text');
+					btnHeader[0].style.background = 'rgba(0, 132, 255, 0.8)';
+					welcome_text[0].style.transform = 'translateX(0vw)';
+					for(let i = 0; i < btnHeader.length; i++) {
+						btnHeader[i].onclick = function() {
+							for(let a = 0; a < welcome_text.length; a++) {
+								welcome_text[a].style.transform = 'translateX(-100vw)';
+								welcome_text[a].style.zIndex = '-1';
+								btnHeader[a].style.background = '';
+							}
+							welcome_text[i].style.transform = 'translateX(0vw)'
+							welcome_text[i].style.zIndex = '1';
+							btnHeader[i].style.background = 'rgba(0, 132, 255, 0.8)';
+						}
+					}
+				}
+			if(mySave.getsave('oldCount') == '' || !(mySave.getsave('oldCount'))){
+				funWelcome();
+			}else{
+				funWelcome();
+				welcome.style.display='none';
+			}
+		</script>
+		<script src="layui/layui.js"></script>
+		<script src="js/echarts3.84.js"></script>
+		<script src="map/js/world.js"></script>
+		<script src="js/shuiqiu.min.js"></script>
+		<script src="js/countUp.min.js"></script>
+		<script src="js/echarts-wordcloud.min.js"></script>
+		<script src="js/localForage.js"></script>
+		<script src="js/socket.io.js"></script>
+		<script src="js/main.js">
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="box"></div>
+		<script>
+			let obj;
+			let arr=[];
+			function funAirpot(data){
+				//因为{}在json数组中,先把{}存在数组  再用展开运算符  + assign 合并对象
+				for(let i=0;i<data.length;i++){
+					arr.push(data[i]);
+				}				
+				obj=Object.assign(...arr);//assign  合并多个{} 
+				console.log(obj)
+					document.querySelectorAll('#box')[0].innerHTML=JSON.stringify(obj);
+			}
+			window.onload=function(){				
+				let script = document.createElement('script');
+				script.setAttribute('src','airpot.haohao');
+				document.querySelector("head").appendChild(script);
+			}
+		</script>
+	</body>
+</html>

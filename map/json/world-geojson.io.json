@@ -1,0 +1,75 @@
+jsonWorld({
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          680.09765625,
+          77.19617635994676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          601.69921875,
+          56.36525013685606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          614.1796875,
+          40.17887331434696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#555555",
+        "stroke-width": 2,
+        "stroke-opacity": 1,
+        "fill": "#555555",
+        "fill-opacity": 0.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              576.5625,
+              -62.75472592723178
+            ],
+            [
+              708.7499999999999,
+              -62.75472592723178
+            ],
+            [
+              708.7499999999999,
+              62.431074232920906
+            ],
+            [
+              576.5625,
+              62.431074232920906
+            ],
+            [
+              576.5625,
+              -62.75472592723178
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+});

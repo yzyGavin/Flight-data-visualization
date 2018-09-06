@@ -1,0 +1,61 @@
+9435行 给size增加参数 fun
+9444行使该参数成为回调函数fun();
+修复数据量超过 两千后  地图拖动、缩放后 地图上的线图散点图不跟随地图拖动、缩放
+echarts.min4.2R2.js 整理代码格式后 15222行 修改progressiveThreshold的2e3为6e3
+echartsNew4.4r2 19095行 progressiveThreshold: 3000 修改为progressiveThreshold: 7000,
+
+使用appendData时 散点数超过2565后 散点的label标签消失:
+19102行 hoverLayerThreshold 3000改为 hoverLayerThreshold:7000
+
+解决echarts 字体 不能在高分屏 跟随我的页面 响应屏幕大小
+label标签 :16720行:括号后添加  /100  , px改为rem
+行高  : 70540行  /100  px改为rem
+87901行 fontStyle.size + 'px " 改为fontStyle.size/100 + 'rem "
+
+88665行 style.fontSize += 'px';  => style.fontSize = style.fontSize/100+ 'rem';
+7639行  (style.fontSize || 12) + 'px', =>  (style.fontSize/100 || 12/100) + 'rem',
+71292  viewMain.style.height = (container.clientHeight - 80) + 'px';  =>  viewMain.style.height = (container.clientHeight - 80)/100 + 'rem';
+所有字体缩小100倍单位改为rem
+72452  改为vmlElStyle.padding = '0 ' + round$3(maxX)/100 + 'rem ' + round$3(maxY)/100 + 'rem 0';
+
+3.84版本:
+ 18643行 progressiveThreshold:3000 改为8000,解决闪烁问题
+ 57291行 cssText.push('line-height:' + Math.round(fontSize * 3 / 2) + 'px'); => cssText.push('line-height:' + Math.round(fontSize * 3 / 2)/100 + 'rem');
+ 72298行 strokeEl.weight = lineWidth + 'px'; =>  strokeEl.weight = lineWidth/100 + 'rem';
+ 72674  + fontStyle.size + 'px "' + fontStyle.family + '"'; => + fontStyle.size/100 + 'rem "' + fontStyle.family + '"';
+ 73452  style.fontSize += 'px'; =>  style.fontSize/100 += 'rem';
+ 7474    (style.fontSize || 12) + 'px',  =>    (style.fontSize/100 || 0.12) + 'rem',
+ 平行坐标系曲线无法修改颜色
+47251行开始: normal: {
+                width: 1,
+                opacity: 0.45,
+                type: 'solid'
+            } = > normal: {
+                width: 1.2,
+                opacity:1,
+                type: 'solid'
+            }
+echarts-wordcloud:
+5663: /100 + "rem
+5837: /100 + "rem "
+5851 :/100 + "rem "
+5897:/100 + "rem "
+5901: (v += "translateX(-" + i.fillTextWidth / 4/100 + "rem) scale(" + 1 / i.mu + ")");
+5905:(f * i.mu)/100 + "rem "   添加了括号
+5906 5907行
+1039 :(t.fontSize || 12)/100 + "rem",
+3649:(t.fontSize || r && r.getShallow("fontSize") || 12)/100 + "rem",
+calendar 样式无法修改bug  :61823 ~ 61851修改了默认样式
+
+SELECT
+	f.*
+FROM
+	flight f
+	JOIN airport a1 ON a1.IATA = f.ORIGIN
+	JOIN airport a2 ON a2.IATA = f.DESTINATION 
+WHERE
+	f.TAKEOFFTIMESACTUAL BETWEEN 1522425600 AND 1522511999
+	AND a1.CITY = '北京市'
+	and a2.CITY='成都市'
+//航空公司准点率  规模  java返回数据结构
+[{"name":"Air China","onTime":25780.0,"all":55455.0,"percent":0.46488145},{"name":"Carga Del Caribe, S.A. de C.V.","onTime":2683.0,"all":4970.0,"percent":0.539839},{"name":"China Southern Airlines","onTime":48314.0,"all":85674.0,"percent":0.56392837},{"name":"Hainan Airlines","onTime":15014.0,"all":32360.0,"percent":0.46396786},{"name":"Lucky Air","onTime":4962.0,"all":8921.0,"percent":0.55621564},{"name":"Shandong Airlines","onTime":12552.0,"all":22694.0,"percent":0.5530977},{"name":"Sichuan Airlines","onTime":12298.0,"all":22527.0,"percent":0.5459227},{"name":"Spring Airlines","onTime":8434.0,"all":14360.0,"percent":0.58732593},{"name":"Transbrasil S.A. Linhas Aereas","onTime":2462.0,"all":4557.0,"percent":0.5402677},{"name":"Xiamen Airlines","onTime":10337.0,"all":25596.0,"percent":0.40385216}]
