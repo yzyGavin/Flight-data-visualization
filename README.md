@@ -3,6 +3,4 @@
 
 ![image](./第一屏.png)
 
-<video id="video" controls="" preload="none" poster="">
-<source id="mp4" src="./1分半星云航班数据可视化介绍视频.mp4" type="video/mp4">
-</video>
+<video  src="./1分半星云航班数据可视化介绍视频.mp4" type="video/mp4"/>
