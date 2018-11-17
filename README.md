@@ -3,4 +3,6 @@
 
 ![image](./第一屏.png)
 
-<video  src="./1分半星云航班数据可视化介绍视频.mp4" type="video/mp4"/>
+[![Watch the video](./1分半星云航班数据可视化介绍视频.mp4)](http://youtu.be/vt5fpE0bzSY)
+
+<video  src=./1分半星云航班数据可视化介绍视频.mp4/>
